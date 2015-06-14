@@ -4,16 +4,28 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 )
 
-var path = "/usr/local/bin/youtube-dl"
+var binpath = "youtube-dl"
 
 func Check(p string) error {
+	if _, err := exec.LookPath("youtube-dl"); err == nil {
+		return nil
+	}
+	return Install(p)
+}
+
+func Install(p string) error {
+	if abs, err := filepath.Abs(p); err != nil {
+		return fmt.Errorf("Cannot get abs path: %s", err)
+	} else {
+		p = abs
+	}
 
 	if info, err := os.Stat(p); err == nil {
 		if info.IsDir() {
@@ -21,8 +33,6 @@ func Check(p string) error {
 		}
 		return nil
 	}
-
-	log.Printf("downloading youtube-dl...")
 
 	htmlb, err := http.Get("https://rg3.github.io/youtube-dl/download.html")
 	if err != nil {
@@ -59,7 +69,7 @@ func Check(p string) error {
 
 	io.Copy(f, bin.Body)
 
-	path = p
+	binpath = p
 
 	if out, err := Run("--version"); err != nil {
 		return fmt.Errorf("Failed to run youtube-dl: %s", err)
@@ -68,9 +78,8 @@ func Check(p string) error {
 	}
 
 	return nil
-	// https: //rg3.github.io/youtube-dl/download.html
 }
 
 func Run(args ...string) ([]byte, error) {
-	return exec.Command(path, args...).Output()
+	return exec.Command(binpath, args...).Output()
 }
