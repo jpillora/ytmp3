@@ -54,6 +54,9 @@ func Check(p string) error {
 		return fmt.Errorf("Cannot create file: %s", err)
 	}
 	defer f.Close()
+	if err := f.Chmod(0777); err != nil {
+		return fmt.Errorf("Cannot set perms")
+	}
 
 	io.Copy(f, bin.Body)
 
