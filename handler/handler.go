@@ -22,7 +22,7 @@ type Config struct {
 func New(c Config) http.Handler {
 
 	if c.YoutubeDL == "" {
-		c.YoutubeDL = "ytdlbin"
+		c.YoutubeDL = "youtube-dl"
 	}
 	// if c.FFMPEG == "" {
 	// 	c.FFMPEG = "ffmpeg"

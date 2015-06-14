@@ -13,8 +13,6 @@ import (
 
 var path = "/usr/local/bin/youtube-dl"
 
-var link = regexp.MustCompile(`(https:\/\/yt-dl\.org\/downloads\/[\d\.]+/youtube-dl)`)
-
 func Check(p string) error {
 
 	if info, err := os.Stat(p); err == nil {
@@ -37,6 +35,7 @@ func Check(p string) error {
 
 	html, err := ioutil.ReadAll(htmlb.Body)
 
+	var link = regexp.MustCompile(`(https:\/\/yt-dl\.org\/downloads\/[\d\.]+/youtube-dl)`)
 	m := link.FindStringSubmatch(string(html))
 	if len(m) == 0 {
 		return fmt.Errorf("Cannot fetch link")
@@ -61,6 +60,13 @@ func Check(p string) error {
 	io.Copy(f, bin.Body)
 
 	path = p
+
+	if out, err := Run("--version"); err != nil {
+		return fmt.Errorf("Failed to run youtube-dl: %s", err)
+	} else if !regexp.MustCompile(`^[\d\.]+`).Match(out) {
+		return fmt.Errorf("Failed to run youtube-dl: %s", out)
+	}
+
 	return nil
 	// https: //rg3.github.io/youtube-dl/download.html
 }
