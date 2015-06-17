@@ -186,6 +186,8 @@ func (y *ytHandler) mp3(w http.ResponseWriter, r *http.Request) {
 	// 	s.Do(release)
 	// }
 
+	// cat ../test.mp4 | ./ffmpeg -i - -vn -acodec libmp3lame -loglevel quiet -ac 2 -ab 160k -ar 48000 -y -f mp3 - > ../audio.mp3
+
 	//video! must extract audio out
 	w.WriteHeader(http.StatusNotImplemented)
 	w.Write([]byte("Video to audio transcoding not implemented yet"))
