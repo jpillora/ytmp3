@@ -1,4 +1,4 @@
-//go:generate go-bindata -pkg static -ignore '\/\.' -o files.go files/
+//go:generate go-bindata -pkg static -ignore .../.DS_Store -o files.go files/
 
 package static
 

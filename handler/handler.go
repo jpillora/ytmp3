@@ -152,6 +152,7 @@ func (y *ytHandler) mp3(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Invalid audio URL: " + err.Error()))
 			return
 		}
+		w.Header().Set("Accept-Ranges", resp.Header.Get("Accept-Ranges"))
 		w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
 		w.Header().Set("Content-Length", resp.Header.Get("Content-Length"))
 		io.Copy(w, resp.Body)
