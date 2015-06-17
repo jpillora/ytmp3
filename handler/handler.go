@@ -115,7 +115,7 @@ func (y *ytHandler) mp3(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, err := ytdl.Run("-g", "https://www.youtube.com/watch?v="+id)
+	out, err := ytdl.Run("-f", "140", "-g", "https://www.youtube.com/watch?v="+id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Failed to retrieve content URLs\n" + string(out)))
@@ -149,10 +149,10 @@ func (y *ytHandler) mp3(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get(audioURL)
 		if err != nil {
 			w.WriteHeader(http.StatusBadGateway)
-			w.Write([]byte("Invalid audio URL"))
+			w.Write([]byte("Invalid audio URL: " + err.Error()))
 			return
 		}
-		w.Header().Set("Content-Type", "audio/mp4")
+		w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
 		w.Header().Set("Content-Length", resp.Header.Get("Content-Length"))
 		io.Copy(w, resp.Body)
 		return
@@ -187,6 +187,6 @@ func (y *ytHandler) mp3(w http.ResponseWriter, r *http.Request) {
 
 	//video! must extract audio out
 	w.WriteHeader(http.StatusNotImplemented)
-	w.Write([]byte("Video not implemented"))
+	w.Write([]byte("Video to audio transcoding not implemented yet"))
 	return
 }
