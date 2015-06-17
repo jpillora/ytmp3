@@ -97,6 +97,7 @@ func (y *ytHandler) ytdl(w http.ResponseWriter, r *http.Request) {
 	out, err := ytdl.Run(args...)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error() + "\n"))
 	}
 	w.Write(out)
 }
