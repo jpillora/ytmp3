@@ -79,5 +79,5 @@ func Install(p string) error {
 }
 
 func Run(args ...string) ([]byte, error) {
-	return exec.Command(binpath, args...).Output()
+	return exec.Command(binpath, args...).CombinedOutput()
 }
